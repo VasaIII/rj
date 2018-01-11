@@ -7,9 +7,10 @@
 # other may report some Makefile errors
 #================================================================ 
 
-OSTYPE = $(shell lsb_release -si)
-ARCH   = $(shell uname -m | sed 's/x86_//;s/i[3-6]86/32/')
-VER    = $(shell lsb_release -sr)
+OSTYPE  = $(shell lsb_release -si)
+ARCH    = $(shell uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+VER     = $(shell lsb_release -sr)
+RJ_HOME = $(shell pwd)
 
 CC=gcc
 GET=co
@@ -24,7 +25,6 @@ BUILD_FLAG =
 BUILD_INC  = 
 RJ_VERSION = v13
 
-RJ_HOME   = /vagrant/rj
 # RJ_HOME = /home3/etkfrbi/bin/design/REMOTEjob_$(RJ_VERSION)
 # RJ_HOME = /HOME/BETEETK/etkfrbi/rj
 # RJ_HOME = /home/frbi/workspace/rj
