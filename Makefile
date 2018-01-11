@@ -211,7 +211,7 @@ lextrace.yy.o:modules/axe/trace/configfile_parser_l
 # To make an executable
 rj.o: rj_$(RJ_VERSION).c
 	$(CC) $< $(BUILD_SRC) $(BUILD_FLAG) $(BUILD_OBJ) $(BUILD_INC) -o rj 
-	cp rj ./bin
+	mv rj ./bin
 	cp sigtran.conf* ./bin
 	cp oscillo.conf* ./bin
 	cp tgen.trigger ./bin
