@@ -1,0 +1,46 @@
+
+@@ ________________________________ Define MML port ________________________________
+mmlcnf:lip="172.17.87.222",lpn=5777,trn=tcp;
+# Control+5 to quit telnet
+# start communication channel with: telnet 172.17.87.222 5777
+
+@@ ________________________________ Define BSC OWN SP 2-101 ________________________________
+c7opi:ownsp=2-101,sptype=sep;
+@@ ________________________________ Define MSC DPC 2-300 ________________________________
+c7spi:sp=2-300,ownsp=2-101,net=ip;
+
+# ------- CASE where my Linux is CLIENT and MSC is SERVER -------
+@@ ________________________________ Bind SCTP users to SCTP layer, lpn is selected by system ________________________________
+ihbii:epid=ep_rnc5555,lip="172.17.87.222",lpn=5555,user=m3ua;
+@@ ________________________________ Activate SCTP users to SCTP layer ________________________________
+ihadi:said=as_rnc5555_santa4444,epid=ep_rnc5555,rip="172.17.85.67",rpn=4444,mode=client;
+
+@@ ________________________________ Define M3UA user destinations ________________________________
+m3rsi:dest=2-300,said=as_rnc5555_santa4444,bmode=client;
+@@ ________________________________ Activate M3UA user destinations ________________________________
+m3rai:dest=2-300;said=as_rnc5555_santa4444;
+ 
+@@ _________________________ Assign MSC DPC in SCCP (c7npi; SSA) and SSN in SPC (c7nsi, SST) _____________________
+# c7npi:sp=2-300;
+c7nsi:sp=2-300,ssn=254;
+
+
+
+@@ _________________________ GSM users _____________________
+bsci:bsc=Split,ownsp=2-101,mscsp=2-300;
+btsi:bsc=Split,cell=Riva,cgi=262-55-1-1;
+btsi:bsc=Split,cell=Brda,cgi=262-55-1-2;
+btsi:bsc=Split,cell=Sucidar,cgi=262-99-2500-3;
+mei:me=frbi, imsi=262550333000001,cell=Riva,bsc=Split;
+mei:me=group,imsi=262550333000010,cell=Brda,bsc=Split;
+
+call:id=0,mo=frbi,type=LU,bhca=0,user="Hello LU !";
+call:id=1,mo=konj,type=LU,bhca=0,user="Hello LU !";
+
+#call:id=0,action=start;
+#call:id=1,action=start;
+
+#call:id=0,action=stop;
+
+
+

@@ -1,0 +1,12 @@
+bison -b ymml -p yymml -d modules/axe/mml/parser_y;
+mv ymml.tab.c modules/axe/mml/parser.y.tab.c
+mv ymml.tab.h modules/axe/mml/parser.y.tab.h
+flex -Pyymml -t modules/axe/mml/parser_l>lexmml.yy.c;
+mv lexmml.yy.c modules/axe/mml/parser.lex.yy.c
+bison -b ytrace -p yytrace -v -d modules/axe/trace/configfile_parser_y;
+mv ytrace.tab.c modules/axe/trace/configfile_parser.y.tab.c
+mv ytrace.tab.h modules/axe/trace/configfile_parser.y.tab.h
+flex -Pyytrace -t modules/axe/trace/configfile_parser_l>lextrace.yy.c;
+mv lextrace.yy.c modules/axe/trace/configfile_parser.lex.yy.c
+gcc rj_v13.c  modules/axe/signalling.c modules/axe/mml/parser.c modules/axe/mml/parser.lex.yy.c modules/axe/mml/parser.y.tab.c modules/axe/mml/sections/sctp.c modules/axe/mml/sections/m3ua.c modules/axe/mml/sections/c7.c modules/axe/mml/sections/mobile.c modules/axe/tgen.c modules/axe/oscillo.c modules/axe/trace/trace.c modules/axe/trace/dataanalyse.c modules/axe/trace/configfile_parser.c modules/axe/trace/configfile_parser.lex.yy.c modules/axe/trace/configfile_parser.y.tab.c modules/axe/application/bss/bss_bsc.c modules/axe/application/ims/voip.c modules/axe/application/pstn/pstn.c modules/protocols/mobile/radio.c modules/protocols/mobile/sccp_bssap.c modules/protocols/mobile/sccp.c modules/protocols/ims/sip.c modules/protocols/trunk/isup.c modules/protocols/sigtran_m3ua.c modules/protocols/sigtran.c modules/protocols/ftp.c modules/system/cfsm.c modules/common.c modules/nethelper.c modules/system/linux_procstats.c modules/system/linux_sysinfo.c  -lpthread -D_REENTRANT -ltermcap -lsctp -L/usr/lib -D _LINUX_  -I/vagrant/rj -I/vagrant/rj/modules -I/vagrant/rj/modules/system -I/vagrant/rj/modules/axe -I/vagrant/rj/modules/axe/application/bss -I/vagrant/rj/modules/axe/application/pstn -I/vagrant/rj/modules/axe/mml -I/vagrant/rj/modules/axe/trace -I/vagrant/rj/modules/cpp -I/vagrant/rj/modules/protocols -I/vagrant/rj/modules/protocols/mobile -I/vagrant/rj/modules/protocols/trunk -I/vagrant/rj/modules/protocols/ims -o rj 
+Makefile:213: recipe for target 'rj.o' failed

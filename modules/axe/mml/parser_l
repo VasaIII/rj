@@ -1,0 +1,271 @@
+%{ 
+#include "modules/common.h"
+#include "modules/nethelper.h"
+#include "modules/axe/mml/parser.h" 
+#include "modules/axe/mml/parser.y.tab.h" 
+
+// Lex/yacc part
+
+void yyerror(char *s) {
+    fprintf(stdout, "MML PARSER YYERROR: <%s>\n", s);
+}
+
+int myyymmlinput(char *buf, int max_size)
+{
+	size_t nb_bytes = 0;
+
+	if (yyinput_analyse_stop0_file1_buffer2 == 2) {
+		int read_buffer_index = STS_COUNTER_VALUE(sts_netcs_transport_receive, NetCS_DataSet[yyinput_analyse_buffer_set].transport_receive.read);
+		int strlength = NetCS_DataSet[yyinput_analyse_buffer_set].transport_receive.buffer[read_buffer_index].size;
+		nb_bytes = ((strlength>max_size)? max_size:strlength);
+
+		ErrorTraceHandle(3, "myyymmlinput(buffer) %d, %d, %d\n", yyinput_analyse_buffer_set, read_buffer_index, strlength);
+
+		if (nb_bytes)
+			memcpy(buf, NetCS_DataSet[yyinput_analyse_buffer_set].transport_receive.buffer[read_buffer_index].data, nb_bytes);
+		else
+			buf[0] = '\0';
+	} else if (yyinput_analyse_stop0_file1_buffer2 == 1) { // input from file
+		nb_bytes = PrimitiveFile2Buffer("./",
+										"sigtran.config",
+										buf,
+										max_size);
+		ErrorTraceHandle(3, "myyymmlinput(file) <%s> size=%d\n\n", buf, nb_bytes);
+	}
+
+	yyinput_analyse_stop0_file1_buffer2 = 0;
+	return (int) nb_bytes;
+}
+
+#define YY_INPUT(buf,result,max_size) { result = myyymmlinput(buf, max_size); }
+
+%} 
+
+
+/* Start Conditions */
+
+
+/* Action Keywords */
+
+akSTRING	[a-zA-Z0-9\.\\/_]+
+akSTRINGQ	\"[a-zA-Z0-9\.\\/_\(\)!\t ]+\"
+akTRACEQ	@@.+\n\t
+akCOMMENTEDQ	\#.+\n
+akEQUAL		=
+akLBRACE	\{
+akRBRACE	\}
+akNEWLINE	\n
+akDOTDOT	:
+akDOTCOMMA  ;
+akCOMMA		,
+akMINUS		-
+
+akHELP		"HELP"|"help"
+akSTATS		"STATS"|"stats"
+akDUMP		"DUMP"|"dump"
+
+akMMLCNF	"MMLCNF"|"mmlcnf"
+akTRN		"TRN"|"trn"
+akINFO		"INFO"|"info"
+
+akSS7LOC	"SS7LOC"|"ss7loc"
+akSS7CON	"SS7CON"|"ss7con"
+akOWNSP		"OWNSP"|"ownsp"
+akSP		"SP"|"sp"
+akSPTYPE	"SPTYPE"|"sptype"
+akNET		"NET"|"net"
+akSI		"SI"|"si"
+akNI		"NI"|"ni"
+akSLS		"SLS"|"sls"
+
+akTRNLOC	"TRNLOC"|"trnloc"
+akTRNCON	"TRNCON"|"trncon"
+akEPID		"EPID"|"epid"
+akSAID		"SAID"|"said"
+akLIP		"LIP"|"lip"
+akLPN		"LPN"|"lpn"
+akRIP		"RIP"|"rip"
+akRPN		"RPN"|"rpn"
+akMODE		"MODE"|"mode"
+akUSER		"USER"|"user"
+
+akM3ACON	"M3ACON"|"m3acon"
+akDEST		"DEST"|"dest"
+akBMODE		"BMODE"|"bmode"
+akTRNID		"TRNID"|"trnid"
+
+akM3LOOP	"M3LOOP"|"m3loop"
+akOWNSP1	"OWNSP1"|"ownsp1"
+akTRNID1	"TRNID1"|"trnid1"
+akDEST1		"DEST1"|"dest1"
+akOWNSP2	"OWNSP2"|"ownsp2"
+akTRNID2	"TRNID2"|"trnid2"
+akDEST2		"DEST2"|"dest2"
+akDIR		"DIR"|"dir"
+akCICINC1	"CICINC1"|"cicinc1"
+akCICINC2	"CICINC2"|"cicinc2"
+
+akSCCPCF	"SCCPCF"|"sccpcf"
+akSSN		"SSN"|"ssn"
+
+akBSCI		"BSCI"|"bsci"
+akBSC		"BSC"|"bsc"
+akMSCSP		"MSCSP"|"mscsp"
+
+akBTSI		"BTSI"|"btsi"
+akCELL		"CELL"|"cell"
+akCGI		"CGI"|"cgi"
+
+akMEI		"MEI"|"mei"
+akIMSI		"IMSI"|"imsi"
+akRANGE		"RANGE"|"range"
+akME		"ME"|"me"
+
+akPHONEI	"PHONEI"|"phonei"
+akPHONE		"PHONE"|"phone"
+akANUM		"ANUM"|"anum"
+akBNUM		"BNUM"|"bnum"
+akBDEST		"BDEST"|"bdest"
+
+akCALL		"CALL"|"call"
+akID		"ID"|"id"
+akCALLER	"CALLER"|"caller"
+akCALLED	"CALLED"|"called"
+akTYPE		"TYPE"|"type"
+akCPS		"CPS"|"cps"
+akDURATION	"DURATION"|"duration"
+akCIC		"CIC"|"cic"
+
+akCMD		"CMD"|"cmd"
+
+akSTART		"START"|"start"
+akSTOP		"STOP"|"stop"
+akDELETE	"DELETE"|"delete"
+akPRINT		"PRINT"|"print"
+
+%% 
+
+{akHELP}	return tokHELP;
+{akSTATS}	return tokSTATS;
+{akDUMP}	return tokDUMP;
+
+{akMMLCNF}	return tokMMLCNF;
+{akTRN}		{ yylval.strVal=(char*)strdup(yytext); return tokTRN; };
+{akINFO}	{ yylval.strVal=(char*)strdup(yytext); return tokINFO; };
+
+{akSS7LOC}	return tokSS7LOC;
+{akSS7CON}	return tokSS7CON;
+{akOWNSP}	{ yylval.strVal=(char*)strdup(yytext); return tokOWNSP; }
+{akSP}		{ yylval.strVal=(char*)strdup(yytext); return tokSP; 	}
+{akSPTYPE}	{ yylval.strVal=(char*)strdup(yytext); return tokSPTYPE;}
+{akNET}		{ yylval.strVal=(char*)strdup(yytext); return tokNET; 	}
+{akSI}		{ yylval.strVal=(char*)strdup(yytext); return tokSI; 	}
+{akNI}		{ yylval.strVal=(char*)strdup(yytext); return tokNI; 	}
+{akSLS}		{ yylval.strVal=(char*)strdup(yytext); return tokSLS; 	}
+
+{akTRNLOC}	return tokTRNLOC;
+{akTRNCON}	return tokTRNCON;
+{akEPID}	{ yylval.strVal=(char*)strdup(yytext); return tokEPID; 	}
+{akSAID}	{ yylval.strVal=(char*)strdup(yytext); return tokSAID; 	}
+{akLIP}		{ yylval.strVal=(char*)strdup(yytext); return tokLIP; 	}
+{akLPN}		{ yylval.strVal=(char*)strdup(yytext); return tokLPN; 	}
+{akRIP}		{ yylval.strVal=(char*)strdup(yytext); return tokRIP; 	}
+{akRPN}		{ yylval.strVal=(char*)strdup(yytext); return tokRPN; 	}
+{akMODE}	{ yylval.strVal=(char*)strdup(yytext); return tokMODE; 	}
+{akUSER}	{ yylval.strVal=(char*)strdup(yytext); return tokUSER; 	}
+
+{akM3ACON}	return tokM3ACON;
+{akDEST}	{ yylval.strVal=(char*)strdup(yytext); return tokDEST; 	}
+{akBMODE}	{ yylval.strVal=(char*)strdup(yytext); return tokBMODE;	}
+{akTRNID}	{ yylval.strVal=(char*)strdup(yytext); return tokTRNID; 	}
+
+{akM3LOOP}	return tokM3LOOP;
+{akOWNSP1}	{ yylval.strVal=(char*)strdup(yytext); return tokOWNSP1; 	}
+{akTRNID1}	{ yylval.strVal=(char*)strdup(yytext); return tokTRNID1; 	}
+{akDEST1}	{ yylval.strVal=(char*)strdup(yytext); return tokDEST1; 	}
+{akOWNSP2}	{ yylval.strVal=(char*)strdup(yytext); return tokOWNSP2; 	}
+{akTRNID2}	{ yylval.strVal=(char*)strdup(yytext); return tokTRNID2; 	}
+{akDEST2}	{ yylval.strVal=(char*)strdup(yytext); return tokDEST2; 	}
+{akDIR}		{ yylval.strVal=(char*)strdup(yytext); return tokDIR; 	 	}
+{akCICINC1}	{ yylval.strVal=(char*)strdup(yytext); return tokCICINC1; 	}
+{akCICINC2}	{ yylval.strVal=(char*)strdup(yytext); return tokCICINC2; 	}
+
+{akSCCPCF}	return tokSCCPCF;
+{akSSN}		{ yylval.strVal=(char*)strdup(yytext); return tokSSN; 	}
+
+{akBSCI}	return tokBSCI;
+{akBSC}		{ yylval.strVal=(char*)strdup(yytext); return tokBSC; 	}
+{akMSCSP}	{ yylval.strVal=(char*)strdup(yytext); return tokMSCSP; }
+
+{akBTSI}	return tokBTSI;
+{akCELL}	{ yylval.strVal=(char*)strdup(yytext); return tokCELL; 	}
+{akCGI}		{ yylval.strVal=(char*)strdup(yytext); return tokCGI; 	}
+
+{akMEI}		return tokMEI;
+{akME}		{ yylval.strVal=(char*)strdup(yytext); return tokME; 	}
+{akIMSI}	{ yylval.strVal=(char*)strdup(yytext); return tokIMSI; 	}
+{akRANGE}	{ yylval.strVal=(char*)strdup(yytext); return tokRANGE; }
+
+{akPHONEI}	return tokPHONEI;
+{akPHONE}	{ yylval.strVal=(char*)strdup(yytext); return tokPHONE; }
+{akANUM}	{ yylval.strVal=(char*)strdup(yytext); return tokANUM; 	}
+{akBNUM}	{ yylval.strVal=(char*)strdup(yytext); return tokBNUM; 	}
+{akBDEST}	{ yylval.strVal=(char*)strdup(yytext); return tokBDEST; }
+
+{akCALL}	return tokCALL;
+{akID}		{ yylval.strVal=(char*)strdup(yytext); return tokID; 	}
+{akCALLER}	{ yylval.strVal=(char*)strdup(yytext); return tokCALLER;}
+{akCALLED}	{ yylval.strVal=(char*)strdup(yytext); return tokCALLED;}
+{akTYPE}	{ yylval.strVal=(char*)strdup(yytext); return tokTYPE;	}
+{akCPS}		{ yylval.strVal=(char*)strdup(yytext); return tokCPS; }
+{akDURATION}	{ yylval.strVal=(char*)strdup(yytext); return tokDURATION; }
+{akCIC}		{ yylval.strVal=(char*)strdup(yytext); return tokCIC; 	}
+
+{akCMD}		{ yylval.strVal=(char*)strdup(yytext); return tokCMD; 	}
+
+{akSTART}	return tokSTART;
+{akSTOP}	return tokSTOP;
+{akDELETE}	return tokDELETE;
+{akPRINT}	return tokPRINT;
+
+
+
+{akEQUAL}	return EQUAL;
+{akLBRACE}	return LBRACE;
+{akRBRACE}	return RBRACE;
+{akNEWLINE}	return NEWLINE;
+{akDOTDOT}	return DOTDOT;
+{akDOTCOMMA} return DOTCOMMA;
+{akCOMMA}	return COMMA;
+{akMINUS}	return MINUS;
+
+
+{akSTRING}	{ yylval.strVal=(char*)strdup(yytext); return STRING; 	}
+{akSTRINGQ}	{ 
+				// remove quotes
+				yylval.strVal=(char*)strdup(yytext+sizeof(char));
+				yylval.strVal[strlen(yylval.strVal)-1] = '\0';
+				return STRING;
+			}
+{akTRACEQ}	{ 
+				// skip @@
+				yylval.strVal=(char*)strdup(yytext+2*sizeof(char));
+				yylval.strVal[strlen(yylval.strVal)-1] = '\0';
+				return TRACE;
+			}
+{akCOMMENTEDQ}	{ 
+				// skip #
+				yylval.strVal=(char*)strdup(yytext+sizeof(char));
+				yylval.strVal[strlen(yylval.strVal)-1] = '\0';
+				return COMMENTED;
+			}
+
+[ \t]+		{ /* Do nothing - ignore input */ }
+.			{ /* Do nothing - ignore input */ }
+
+
+%%
+
+int yywrap(void) { 
+    return 1; 
+}

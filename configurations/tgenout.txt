@@ -1,0 +1,13 @@
+Traffic --------------------     CALL/S   CALLS/S CALLS     CALLS     CALLS     IN        FAIL
+Case Name               Type     SET____  ACTUAL  MADE____  OK______  FAIL____  PROGRESS  RATE [%]
+GSM_TERM_CALLS            I          0         0         0         0         0         0     0.000
+UMTS_TERM_CALLS           I          0         0         0         0         0         0     0.000
+GSM_LU_UPDATE             O          1         0         0         0         0         0     0.000
+GSM_LU_PERIODIC           O        500       500     30359     30359         0        34     0.000
+GSM_LU_REGISTER           O          1         0         0         0         0         0     0.000
+GSM_LU_ATTACH             O          1         0         0         0         0         0     0.000
+UMTS_LU_PERIODIC          O        500       502     30359     30359         0        41     0.000
+UMTS_LU_REGISTER          O          1         0         0         0         0         0     0.000
+UMTS_MOB_TO_MOB           O          1         0         0         0         0         0     0.000
+-------- TOTAL ---------          1005      1002     60718     60718         0               0.000
+

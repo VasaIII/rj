@@ -1,0 +1,38 @@
+
+@@ ________________________________ Define MML port ________________________________
+mmlcnf:lip="172.17.87.206",lpn=5777,trn=tcp;
+# Control+5 to quit telnet
+# start communication channel with: telnet 172.17.87.222 5777
+
+@@ ________________________________ SP ________________________________
+c7opi:ownsp=2-5300,sptype=sep,		info="TCx.1";
+c7spi:sp=2-600,ownsp=2-5300,net=ip,	info="TCx.2";
+c7spi:sp=2-600,ownsp=2-5400,net=ip,	info="TCx.2";
+
+@@ ________________________________ SCTP ______________________________
+ihbii:epid=ep_bsc5300_n600,lip="172.23.47.252",lpn=5300,user=m3ua,info="ERO BSC LIP and port";
+ihadi:said=sa_bsc5300_n600,epid=ep_bsc5300_n600,rip="172.23.47.6",rpn=5300,mode=client,info="MSC N600 RIP and port";
+
+@@ ________________________________ M3UA ______________________________
+m3rsi:dest=2-600,said=sa_bsc5300_n600,bmode=client,info="M3UA toward N600 for our BSC 5300";
+
+@@ ________________________________ SCCP ______________________________
+c7nsi:sp=2-600,ssn=254,info="Start SSN";
+
+@@ ________________________________ BSS _______________________________
+bsci:bsc=Split, ownsp=2-5300,mscsp=2-600;
+bsci:bsc=Trogir,ownsp=2-5400,mscsp=2-600;
+btsi:bsc=Split, cell=Riva,   cgi=262-55-5300-1;
+btsi:bsc=Split, cell=Brda,   cgi=262-55-5300-2;
+btsi:bsc=Split, cell=Sucidar,cgi=262-55-5300-3;
+btsi:bsc=Split, cell=cell1,  cgi=262-55-5300-1;
+btsi:bsc=Split, cell=cell2,  cgi=262-55-5300-1;
+btsi:bsc=Split, cell=cell3,  cgi=262-55-5300-1;
+btsi:bsc=Split, cell=cell4,  cgi=262-55-5300-1;
+mei:me=mo0,imsi=262996000020000,range=10000,cell=cell1,bsc=Split;
+mei:me=mo1,imsi=262996000030000,range=10000,cell=cell2,bsc=Split;
+
+@@ ________________________________ CALLS _____________________________
+call:id=0,mo=mo0,type=LU,bhca=1000,user="Hello LU";
+call:id=1,mo=mo1,type=LU,bhca=1000,user="Hello LU";
+

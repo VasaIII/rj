@@ -1,0 +1,127 @@
+%{ 
+#include "modules/common.h"
+#include "modules/nethelper.h"
+#include "modules/axe/trace/trace.h"
+#include "modules/axe/trace/configfile_parser.h"
+#include "modules/axe/trace/configfile_parser.y.tab.h" 
+
+void yyerror(char *); 
+
+int  myyytraceinput(char *buf, int max_size);
+
+#define YY_INPUT(buf,result,max_size) { result = myyytraceinput(buf, max_size); }
+
+void yyerror(char *s) {
+    fprintf(stdout, "TRACE PARSER YYERROR: <%s>\n", s);
+}
+
+int myyytraceinput(char *buf, int max_size)
+{
+	size_t nb_bytes = 0;
+	unsigned int read_buffer_index = STS_COUNTER_VALUE(sts_netcs_transport_receive, NetCS_DataSet[yyNetCS_set].transport_receive.read);
+	
+	ErrorTraceHandle(2, "myyytraceinput()\n");
+
+	if (yyinput_analyse_stop0_file1_buffer2 == 2) { // input from socket
+		int strlength = NetCS_DataSet[yyNetCS_set].transport_receive.buffer[read_buffer_index].size;
+		nb_bytes = ((strlength>max_size)? max_size:strlength);
+
+		if (nb_bytes)
+			memcpy(buf, NetCS_DataSet[yyNetCS_set].transport_receive.buffer[read_buffer_index].data, nb_bytes);
+		else
+			buf[0] = '\0';
+		ErrorTraceHandle(2, "myyytraceinput(buffer) <%s> size=%d, SET-%d/buff-%d\n",
+						 buf, nb_bytes, yyNetCS_set, read_buffer_index);
+
+		// unlock data here, after they are parsed
+		NETCS_RECEIVED_CLR_STATUS(tcp, yyNetCS_set, read_buffer_index, NETCS_USERDATAVALID);
+		NETCS_RECEIVED_READED(tcp, yyNetCS_set);
+
+	} else if (yyinput_analyse_stop0_file1_buffer2 == 1) { // input from file
+		nb_bytes = PrimitiveFile2Buffer(NULL,
+										yyparseFileName,
+										buf,
+										max_size);
+		ErrorTraceHandle(2, "myyytraceinput(file) <%s> size=%d", buf, nb_bytes);
+	}
+
+	yyinput_analyse_stop0_file1_buffer2 = 0;
+	return (int) nb_bytes;
+}
+%} 
+
+
+/* Start Conditions */
+
+
+/* Action Keywords */
+
+akSTRING	[a-zA-Z0-9\.\\/_-]+
+akSTRINGQ	\".+\"
+akEQUAL		=
+akLBRACE	\{
+akRBRACE	\}
+akLBRACESQ	\[
+akRBRACESQ	\]
+akNEWLINE	\n
+
+akPROJECT_CUSTOM 		"CUSTOM"|"custom"
+akPROJECT_TELIMP 		"TELIMP"|"telimp"
+
+akPROJECT_CCM	 		"CCM"|"ccm"
+akHEADING				"HEADING"|"heading"
+akVARIABLE_MASK			"VARIABLE_MASK"|"variable_mask"
+akVARIABLE_NAME			"VARIABLE_NAME"|"variable_name"
+akVARIABLE  			"VARIABLE"|"variable"
+akTIMESLICE				"TIMESLICE"|"timeslice"
+akCONVERTBASE			"CONVERTBASE"|"convertbase"
+akINDEXTYPE				"INDEXTYPE"|"indextype"
+akLOCALFILENAMEDIR		"localfilenamedir"
+akTRACEPREFIXNAME		"traceprefixname"
+akTRACECONFIGFILENAME	"traceconfigfilename"
+
+
+%% 
+
+
+
+{akPROJECT_CUSTOM}	return tokPROJECT_CUSTOM;
+{akPROJECT_TELIMP}	return tokPROJECT_TELIMP;
+
+
+{akPROJECT_CCM}			{ yylval.strVal=(char*)strdup(yytext); return tokPROJECT_CCM; }
+{akLOCALFILENAMEDIR}	{ yylval.strVal=(char*)strdup(yytext); return tokLOCALFILENAMEDIR; }
+{akTRACEPREFIXNAME}		{ yylval.strVal=(char*)strdup(yytext); return tokTRACEPREFIXNAME; }
+{akTRACECONFIGFILENAME}	{ yylval.strVal=(char*)strdup(yytext); return tokTRACECONFIGFILENAME; }
+
+{akHEADING}				{ yylval.strVal=(char*)strdup(yytext); return tokHEADING;  }
+{akVARIABLE_MASK}		{ yylval.strVal=(char*)strdup(yytext); return tokVARIABLE_MASK; }
+{akVARIABLE_NAME}		{ yylval.strVal=(char*)strdup(yytext); return tokVARIABLE_NAME; }
+{akVARIABLE}			{ yylval.strVal=(char*)strdup(yytext); return tokVARIABLE; }
+{akTIMESLICE}			{ yylval.strVal=(char*)strdup(yytext); return tokTIMESLICE; }
+{akCONVERTBASE}			{ yylval.strVal=(char*)strdup(yytext); return tokCONVERTBASE; }
+{akINDEXTYPE}			{ yylval.strVal=(char*)strdup(yytext); return tokINDEXTYPE; }
+
+{akEQUAL}	return EQUAL;
+{akLBRACE}	return LBRACE;
+{akRBRACE}	return RBRACE;
+{akLBRACESQ} return LBRACESQ;
+{akRBRACESQ} return RBRACESQ;
+{akNEWLINE}	return NEWLINE;
+{akSTRING}	{ yylval.strVal=(char*)strdup(yytext); return STRING; }
+{akSTRINGQ}	{ 
+				// remove quotes
+				yylval.strVal=(char*)strdup(yytext+sizeof(char));
+				yylval.strVal[strlen(yylval.strVal)-1] = '\0';
+				return STRING;
+			}
+
+[ \t]+		{ /* Do nothing - ignore input */ }
+.			{ /* Do nothing - ignore input */ }
+
+
+%%
+
+int yywrap(void) { 
+    return 1; 
+}

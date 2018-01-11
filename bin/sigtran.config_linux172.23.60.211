@@ -1,0 +1,39 @@
+
+@@ ________________________________ Define MML port ________________________________
+mmlcnf:lip="172.23.60.211",lpn=5777,trn=tcp;
+# Control+5 to quit telnet
+# start communication channel with: telnet 172.17.87.222 5777
+
+@@ ________________________________ Define OWN SP 2-5550 and OWN SP 2-5540 ________________________________
+c7opi:ownsp=2-5553,sptype=sep;
+c7opi:ownsp=2-5556,sptype=sep;
+@@ ________________________________ Define remote SP 2-400 accesible from both OWN SP's ________________________________
+c7spi:sp=2-2302,ownsp=2-5553,net=ip;
+c7spi:sp=2-2302,ownsp=2-5556,net=ip;
+
+# ------- CASE where my Linux is CLIENT and MSC is SERVER -------
+@@ ________________________________ Bind SCTP users to SCTP layer, lpn is selected by system ________________________________
+ihbii:epid=ep_linux1,lip="10.3.8.38",lpn=5553,user=m3ua;
+ihbii:epid=ep_linux2,lip="10.3.8.38",lpn=5556,user=m3ua;
+@@ ________________________________ Activate SCTP users to SCTP layer ________________________________
+ihadi:said=as_linux1_eris4443,epid=ep_linux1,rip="10.2.111.1",rpn=4443,mode=client;
+ihadi:said=as_linux2_eris4446,epid=ep_linux2,rip="10.2.111.1",rpn=4446,mode=client;
+
+
+
+
+
+
+
+
+
+@@ ________________________________ Define M3UA user destinations ________________________________
+m3rsi:dest=2-2302,said=as_linux1_eris4443,bmode=client;
+m3rsi:dest=2-2302,said=as_linux2_eris4446,bmode=client;
+# @@ ________________________________ Activate M3UA user destinations ________________________________
+# m3rai:dest=2-2302,said=as_linux1_eris4443;
+# m3rai:dest=2-2302,said=as_linux2_eris4446;
+
+@@ ________________________________ Define m3ua loop ________________________________
+m3loop:dest1=2-2302,said1=as_linux1_eris4443,ownsp1=2-5553,dest2=2-2302,said2=as_linux2_eris4446,ownsp2=2-5556,dir=bothway;
+m3loop:dest1=2-2302,said1=as_linux1_eris4443,ownsp1=2-5556,dest2=2-2302,said2=as_linux2_eris4446,ownsp2=2-5553,dir=bothway;

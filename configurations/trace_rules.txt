@@ -1,0 +1,49 @@
+
+!!! Rules are changed with 
+TIMESLICE   = 1000
+CONVERTBASE = 10
+INDEXTYPE   = GLOBAL
+VARIABLE[A] = UMTS_MOB_TO_MOB_SET
+VARIABLE[B] = UMTS_MOB_TO_MOB_ACTUAL
+VARIABLE[C] = UMTS_MOB_TO_MOB_MADE
+VARIABLE[D] = UMTS_MOB_TO_MOB_OK
+VARIABLE[E] = UMTS_MOB_TO_MOB_FAIL
+VARIABLE[F] = UMTS_MOB_TO_MOB_PROGRESS
+... update next time oscillo is to be used, tgen is updated since it was used from shell, and oscillo
+was used from old one installed on solaris
+
+
+
+										User Guide
+ 
+Example:
+
+TGENTRAFFIC_ALL {
+HEADING       = "Case Name               Type     SET____  ACTUAL  MADE____  OK______  FAIL____  PROGRESS  RATE [%]"
+VARIABLE_MASK = "                                 *****     *****    ******    ******    ******    ******          "
+VARIABLE_NAME = "GSM_TERM_CALLS            *      AAAAA     BBBBB    CCCCCC    DDDDDD    EEEEEE    FFFFFF   ***.***"
+SIZE = 10
+BASE = 16
+}
+
+... VARIABLE_MASK and VARIABLE_NAME must be of same length, one VARIABLE_MASK should have matching VARIABLE_NAME
+... VARIABLE_MASK should only contain * above variables in VARIABLE_NAME, all other chars should be blank
+... VARIABLE_NAME: * ignores character from analysed text, all other (except variables) should match text
+
+... means that key CCMVAR_PROCLOADCURRENT has one HEADING, one VARIABLE and one SIZE values
+... there may be different variables within one VARIABLE string in same KEY
+	TGENTRAFFIC_ALL {
+	HEADING  = "Case Name               Type     SET____  ACTUAL  MADE____  OK______  FAIL____  PROGRESS  RATE [%]"
+	VARIABLE = "****************          *      AAAAA     BBBBB    CCCCCC    DDDDDD    EEEEEE    FFFFFF   ***.***"
+	}
+... there may be same more same variables within VARIABLE string in different KEY
+	CCMVAR_PROCLOADCURRENT {
+	HEADING  = "   CCM      VAR H'024"
+	VARIABLE = "********:......)*'AAAA:*'AAAA:*'AAAA:*'AAAA:*'AAAA:*'AAAA:*'AAAA:*'AAAA:"
+	}
+
+... SIZE is time period for all variables within same KEY
+
+... BASE is convert type of values extracted from variables
+
+

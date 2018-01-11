@@ -1,0 +1,22 @@
+# Control+5 to quit telnet
+# start communication channel with: telnet 172.17.87.222 5777
+mmlcnf:lip="172.23.60.211",lpn=5777,trn=tcp;
+
+#BSS
+c7opi:ownsp=2-5300,sptype=sep,info="ERO BSS ownsp5300";
+c7spi:sp=2-600,ownsp=2-5300,net=ip,info="MSC sp600";
+ihbii:epid=ep_bsc5300_n600,lip="172.23.47.252",lpn=5300,user=m3ua,info="ERO BSC lip and port";
+ihadi:said=sa_bsc5300_n600,epid=ep_bsc5300_n600,rip="172.23.47.6",rpn=5300,mode=client,info="MSC N600 rip and port";
+m3rsi:dest=2-600,said=sa_bsc5300_n600,bmode=client,info="M3UA ERO BSS sp650 to MSC sp5300";
+ihbii:epid=ep_bsc5300_n600,                      start;
+ihadi:epid=ep_bsc5300_n600,said=sa_bsc5300_n600, start;
+m3rsi:said=sa_bsc5300_n600,                      start;
+
+#ISUP
+c7opi:ownsp=2-650,sptype=sep",info="ERO ISUP ownsp650";
+c7spi:sp=2-600,ownsp=2-650,net=ip,info="MSC sp600";
+ihbii:epid=ep_isup650_n600,lip="172.23.47.252",lpn=6650,user=m3ua,info="ERO ISUP lip and port";
+ihadi:said=sa_isup650_n600,epid=ep_isup650_n600,rip="172.23.47.6",rpn=6650,mode=client,info="MSC N600 rip and port";
+m3rsi:dest=2-600,said=sa_isup650_n600,bmode=client,info="M3UA ERO ISUP sp650 to MSC sp600";
+
+phonei:phone=0,anum=021225100,bnum=021225101,bdest=2-600,range=1;

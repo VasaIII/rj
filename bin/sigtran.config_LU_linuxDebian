@@ -1,0 +1,29 @@
+# Control+5 to quit telnet
+# start communication channel with: telnet 172.17.87.222 5777
+mmlcnf:lip="172.17.87.222",lpn=5777,trn=tcp;
+
+c7opi:ownsp=2-101,sptype=sep,		info="TCx.1";
+c7spi:sp=2-300,ownsp=2-101,net=ip,	info="TCx.2";
+
+ihbii:epid=ep_rnc5555,lip="172.17.87.222",lpn=5555,user=m3ua,info="TC1.3";
+ihbii:epid=ep_rnc5000,lip="172.17.87.222",lpn=5000,user=m3ua,info="TC2.3";
+
+ihadi:said=as_rnc5555_santa4444,epid=ep_rnc5555,rip="172.17.85.67",rpn=4444,mode=client,info="TC1.4";
+ihadi:said=as_rnc5000_santa4444,epid=ep_rnc5000,rip="172.17.86.92",rpn=4445,mode=server,info="TC2.4";
+
+m3rsi:dest=2-300;said=as_rnc5555_santa4444,bmode=client,info="TC1.5";
+m3rsi:dest=2-300,said=as_rnc5000_santa4444,bmode=client;info="TC2.5";
+
+c7nsi:sp=2-300,ssn=254,info="TC1.6";
+
+bsci:bsc=Split,ownsp=2-101,mscsp=2-300;
+
+btsi:bsc=Split,cell=Riva,cgi=262-55-1-1;
+btsi:bsc=Split,cell=Brda,cgi=262-55-1-2;
+btsi:bsc=Split,cell=Sucidar,cgi=262-99-2500-3;
+
+mei:me=frbi, imsi=262550333000001,range=15,cell=Riva,bsc=Split;
+mei:me=group,imsi=262550333000010,range=15,cell=Brda,bsc=Split;
+
+call:id=0,mo=frbi,type=LU,bhca=0,user="Hello LU";
+call:id=1,mo=konj,type=LU,bhca=0,user="Hello LU";

@@ -1,0 +1,277 @@
+%{ 
+#define YACC
+#include "modules/common.h" 
+#include "modules/axe/trace/trace.h" 
+#include "modules/axe/trace/configfile_parser.h" 
+#undef YACC
+
+void yyerror(char *s);
+int  yydebug = 1;
+
+%}
+
+%union {
+	char *strVal;
+}
+
+
+%token <strVal> STRING
+
+%type  <strVal> generalassignment
+%type  <strVal> predefinedassignment
+
+%token EQUAL
+%token LBRACE RBRACE LBRACESQ RBRACESQ NEWLINE
+
+%token tokPROJECT_CUSTOM
+%token tokPROJECT_TELIMP
+
+%token tokPROJECT_CCM
+%token <strVal> tokLOCALFILENAMEDIR
+%token <strVal> tokTRACEPREFIXNAME
+%token <strVal> tokTRACECONFIGFILENAME
+
+%token <strVal> tokHEADING
+%token <strVal> tokVARIABLE_MASK
+%token <strVal> tokVARIABLE_NAME
+%token <strVal> tokVARIABLE
+%token <strVal> tokTIMESLICE
+%token <strVal> tokCONVERTBASE
+%token <strVal> tokINDEXTYPE
+
+%% 
+
+
+statements:	
+		statements assignments
+		| /* NULL */
+		;
+	
+assignments:	
+		assignments generalassignment NEWLINE { ErrorTraceHandle(4, "... ASSGENERAL\n"); }
+		| assignments predefinedassignment NEWLINE { ErrorTraceHandle(4, "... ASSPREDEF\n"); }
+		| NEWLINE
+		| /* NULL */
+		;
+		
+generalassignment:
+	generalassignment { ErrorTraceHandle(4, "is general and ASSIGNED to "); } EQUAL generalassignment
+	| generalassignment LBRACE NEWLINE
+		{ 
+			strcpy(yyActiveBracketUnknownString, $1);
+			ErrorTraceHandle(4, "OPENS BRACKETS with <%s> \n", yyActiveBracketUnknownString); 
+		}
+		assignments RBRACE 
+		{ 
+			ErrorTraceHandle(4, "CLOSES BRACKETS "); 
+			yyActiveBracketUnknownString[0]='\0';
+		}
+	| STRING { ErrorTraceHandle(4, "STRING <%s> ", $1); }
+	| { $$="BLANK"; } /* NULL */
+	;
+
+
+predefinedassignment:
+
+/* *********************************************************************
+	VARIABLE ASSIGNMENTS
+
+	Sets: 
+   	Project.EditedFile[].TriggerProjectInfo.LocalFileNameDir
+   	Project.EditedFile[].TriggerProjectInfo.OutputFileNameDir
+*/
+	
+	tokLOCALFILENAMEDIR { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			enum projectDataConfigEnum val = eLOCALFILENAMEDIR;
+			
+			strcpy(Project.EditedFile[yynIndex].TriggerProjectInfo.LocalFileNameDir, $4);
+			strcpy(Project.EditedFile[yynIndex].TriggerProjectInfo.OutputFileNameDir, Project.EditedFile[yynIndex].TriggerProjectInfo.LocalFileNameDir);
+			strcat(Project.EditedFile[yynIndex].TriggerProjectInfo.OutputFileNameDir, "_out.txt");
+			yyProjectDataConfigMask|= (1<<val);
+			ErrorTraceHandle(2, "LOCALFILENAMEDIR<%s, %d> (0x%X, %d)\n",
+				Project.EditedFile[yynIndex].TriggerProjectInfo.LocalFileNameDir, yynIndex, yyProjectDataConfigMask, val); 
+			if (yynIndex == MAX_NO_OF_FILES) {
+				ErrorTraceHandle(1, "Maximum number of files is %d !", MAX_NO_OF_FILES); 
+				exit(0);
+			}
+		}
+
+	| tokTRACEPREFIXNAME { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			enum projectDataConfigEnum val = eTRACEPREFIXNAME;
+			strcpy(Project.EditedFile[yynIndex].TriggerProjectInfo.TraceConfigPrefix, $4);
+			yyProjectDataConfigMask|= (1<<val);
+			ErrorTraceHandle(2, "TRACEPREFIXNAME<%s> (0x%X, %d)\n",
+				Project.EditedFile[yynIndex].TriggerProjectInfo.TraceConfigPrefix, yyProjectDataConfigMask, val); 
+		}
+
+	| tokTRACECONFIGFILENAME { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			enum projectDataConfigEnum val = eTRACECONFIGFILENAME;
+			strcpy(Project.EditedFile[yynIndex].TriggerProjectInfo.TraceConfigFileName, $4);
+			yyProjectDataConfigMask|= (1<<val);
+			ErrorTraceHandle(2, "TRACECONFIGFILENAME<%s> (0x%X, %d)\n",
+				Project.EditedFile[yynIndex].TriggerProjectInfo.TraceConfigFileName, yyProjectDataConfigMask, val); 
+		}
+
+	| tokHEADING { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "HEADING<%s>\n", $4);
+		
+			// HEADING should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eHEADING, $4, NULL);
+			} else {
+				ErrorTraceHandle(1, "HEADING could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+
+	| tokVARIABLE_MASK { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "VARIABLE_MASK<%s>\n", $4); 
+		
+			// VARIABLE_MASK should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eVARIABLE_MASK, $4, NULL);
+			} else {
+				ErrorTraceHandle(1, "VARIABLE_MASK could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+
+	| tokVARIABLE_NAME { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "VARIABLE_NAME<%s>\n", $4); 
+		
+			// VARIABLE_NAME should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eVARIABLE_NAME, $4, NULL);
+			} else {
+				ErrorTraceHandle(1, "VARIABLE_NAME could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+		
+	| tokVARIABLE LBRACESQ STRING { ErrorTraceHandle(4, "STRING <%s> and <%s> is recognised ", $1, $3); } RBRACESQ EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "VARIABLE<%s>\n", $7); 
+		
+			// VARIABLE should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eVARIABLE, $3, $7);
+			} else {
+				ErrorTraceHandle(1, "VARIABLE could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+
+	| tokTIMESLICE	 { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "TIMESLICE<%s>\n", $4); 
+		
+			// TIMESLICE should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eTIMESLICE, $4, NULL);
+			} else {
+				ErrorTraceHandle(1, "TIMESLICE could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+
+	| tokCONVERTBASE { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "CONVERTBASE<%s>\n", $4); 
+		
+			// CONVERTBASE should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eCONVERTBASE, $4, NULL);
+			} else {
+				ErrorTraceHandle(1, "CONVERTBASE could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+		
+	| tokINDEXTYPE { ErrorTraceHandle(4, "STRING <%s> is recognised assigned to ", $1); } EQUAL STRING
+		{ 
+			ErrorTraceHandle(4, "INDEXTYPE<%s>\n", $4); 
+		
+			// INDEXTYPE should be within trace BRACKETS where yyActiveBracketUnknownString will be defined
+			if (yyActiveBracketUnknownString != NULL)
+			{
+				yyFillKeyStruct(eINDEXTYPE, $4, NULL);
+			} else {
+				ErrorTraceHandle(1, "INDEXTYPE could not be processed outside of defined variable.");
+				yyerror($1);
+			}
+		}
+		
+/* *********************************************************************
+	VARIABLE SETS ASSIGNMENTS (PROJECTS ...) 
+
+	Sets: 
+   	Project.ID
+*/
+
+		
+	| tokPROJECT_CUSTOM LBRACE NEWLINE 
+		{ 		
+			Project.ID = PROJECT_CUSTOM;
+			yyProjectDataConfigMask = 0;
+			ErrorTraceHandle(2, "CUSTOM PROJECT STATEMENTS START define ( ) \n"); 
+		} 
+		assignments RBRACE 
+		{ 
+			ErrorTraceHandle(2, "CUSTOM PROJECT STATEMENTS END ... "); 
+			if (yyProjectDataConfigMask != 0)
+				ErrorTraceHandle(1, "unsuccesfully (%X).\n", yyProjectDataConfigMask); 
+			else
+				ErrorTraceHandle(2, "succesfully. \n"); 
+		}
+		
+	| tokPROJECT_TELIMP LBRACE NEWLINE
+		{ 
+			Project.ID = PROJECT_TELIMPULSE;
+			yyProjectDataConfigMask = 0;
+			ErrorTraceHandle(2, "LORA PROJECT STATEMENTS START define ( ) \n"); 
+		} 
+		assignments RBRACE 
+		{ 
+			ErrorTraceHandle(2, "LORA PROJECT STATEMENTS END ... "); 
+			if (yyProjectDataConfigMask != 0)
+				ErrorTraceHandle(1, "unsuccesfully (%X).\n", yyProjectDataConfigMask); 
+			else
+				ErrorTraceHandle(2, "succesfully. \n"); 
+							
+		}
+		
+	| tokPROJECT_CCM LBRACE NEWLINE 
+		{ 
+			Project.ID = PROJECT_CCM;
+			yyProjectDataConfigMask = 0;
+			yynIndex = 0; // in CCM project number of files is not increased, it remains 0 
+			ErrorTraceHandle(2, "CCM PROJECT STATEMENTS START define ( localfilenamedir= , traceprefixname= ) \n"); 
+		} 
+		assignments RBRACE 	
+		{ 
+			ErrorTraceHandle(2, "CCM PROJECT STATEMENTS END ... "); 
+			if (yyProjectDataConfigMask != 0x1C)
+				ErrorTraceHandle(1, "unsuccesfully (%X).\n", yyProjectDataConfigMask); 
+			else
+				ErrorTraceHandle(4, "succesfully. \n"); 
+		}
+	;
+
+/* ********************************************************************* */
+
+
+
+
+%% 

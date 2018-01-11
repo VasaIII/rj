@@ -1,0 +1,16 @@
+
+Example of string sent from jsp for eOscilloscope:
+ccm{
+localfilenamedir		= "/home3/etkfrbi/oscilloLogs/serverOutput/ThisTest2SouldWork.log"
+traceconfigfilename		= "oscillo.config"
+traceprefixname			= "CCMVAR_"
+}
+
+Example of string in trigger file for TGEN:
+tgen{
+tracetestIP    			= "127.0.0.1"
+tracetestport  			= 9000
+tracetestpollmsecperiod = 1000
+traceconfigfilename		= "tgen.config"
+traceprefixname			= "TGENTRAFFIC_"
+}

@@ -1,0 +1,908 @@
+State 1 conflicts: 2 shift/reduce
+State 4 conflicts: 14 shift/reduce, 3 reduce/reduce
+State 53 conflicts: 1 shift/reduce
+State 54 conflicts: 1 shift/reduce
+State 55 conflicts: 1 shift/reduce
+State 66 conflicts: 1 shift/reduce
+State 67 conflicts: 1 shift/reduce, 1 reduce/reduce
+
+
+Grammar
+
+    0 $accept: statements $end
+
+    1 statements: statements assignments
+    2           | %empty
+
+    3 assignments: assignments generalassignment NEWLINE
+    4            | assignments predefinedassignment NEWLINE
+    5            | NEWLINE
+    6            | %empty
+
+    7 $@1: %empty
+
+    8 generalassignment: generalassignment $@1 EQUAL generalassignment
+
+    9 $@2: %empty
+
+   10 generalassignment: generalassignment LBRACE NEWLINE $@2 assignments RBRACE
+   11                  | STRING
+   12                  | %empty
+
+   13 $@3: %empty
+
+   14 predefinedassignment: tokLOCALFILENAMEDIR $@3 EQUAL STRING
+
+   15 $@4: %empty
+
+   16 predefinedassignment: tokTRACEPREFIXNAME $@4 EQUAL STRING
+
+   17 $@5: %empty
+
+   18 predefinedassignment: tokTRACECONFIGFILENAME $@5 EQUAL STRING
+
+   19 $@6: %empty
+
+   20 predefinedassignment: tokHEADING $@6 EQUAL STRING
+
+   21 $@7: %empty
+
+   22 predefinedassignment: tokVARIABLE_MASK $@7 EQUAL STRING
+
+   23 $@8: %empty
+
+   24 predefinedassignment: tokVARIABLE_NAME $@8 EQUAL STRING
+
+   25 $@9: %empty
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ STRING $@9 RBRACESQ EQUAL STRING
+
+   27 $@10: %empty
+
+   28 predefinedassignment: tokTIMESLICE $@10 EQUAL STRING
+
+   29 $@11: %empty
+
+   30 predefinedassignment: tokCONVERTBASE $@11 EQUAL STRING
+
+   31 $@12: %empty
+
+   32 predefinedassignment: tokINDEXTYPE $@12 EQUAL STRING
+
+   33 $@13: %empty
+
+   34 predefinedassignment: tokPROJECT_CUSTOM LBRACE NEWLINE $@13 assignments RBRACE
+
+   35 $@14: %empty
+
+   36 predefinedassignment: tokPROJECT_TELIMP LBRACE NEWLINE $@14 assignments RBRACE
+
+   37 $@15: %empty
+
+   38 predefinedassignment: tokPROJECT_CCM LBRACE NEWLINE $@15 assignments RBRACE
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+STRING (258) 11 14 16 18 20 22 24 26 28 30 32
+EQUAL (259) 8 14 16 18 20 22 24 26 28 30 32
+LBRACE (260) 10 34 36 38
+RBRACE (261) 10 34 36 38
+LBRACESQ (262) 26
+RBRACESQ (263) 26
+NEWLINE (264) 3 4 5 10 34 36 38
+tokPROJECT_CUSTOM (265) 34
+tokPROJECT_TELIMP (266) 36
+tokPROJECT_CCM (267) 38
+tokLOCALFILENAMEDIR (268) 14
+tokTRACEPREFIXNAME (269) 16
+tokTRACECONFIGFILENAME (270) 18
+tokHEADING (271) 20
+tokVARIABLE_MASK (272) 22
+tokVARIABLE_NAME (273) 24
+tokVARIABLE (274) 26
+tokTIMESLICE (275) 28
+tokCONVERTBASE (276) 30
+tokINDEXTYPE (277) 32
+
+
+Nonterminals, with rules where they appear
+
+$accept (23)
+    on left: 0
+statements (24)
+    on left: 1 2, on right: 0 1
+assignments (25)
+    on left: 3 4 5 6, on right: 1 3 4 10 34 36 38
+generalassignment (26)
+    on left: 8 10 11 12, on right: 3 8 10
+$@1 (27)
+    on left: 7, on right: 8
+$@2 (28)
+    on left: 9, on right: 10
+predefinedassignment (29)
+    on left: 14 16 18 20 22 24 26 28 30 32 34 36 38, on right: 4
+$@3 (30)
+    on left: 13, on right: 14
+$@4 (31)
+    on left: 15, on right: 16
+$@5 (32)
+    on left: 17, on right: 18
+$@6 (33)
+    on left: 19, on right: 20
+$@7 (34)
+    on left: 21, on right: 22
+$@8 (35)
+    on left: 23, on right: 24
+$@9 (36)
+    on left: 25, on right: 26
+$@10 (37)
+    on left: 27, on right: 28
+$@11 (38)
+    on left: 29, on right: 30
+$@12 (39)
+    on left: 31, on right: 32
+$@13 (40)
+    on left: 33, on right: 34
+$@14 (41)
+    on left: 35, on right: 36
+$@15 (42)
+    on left: 37, on right: 38
+
+
+State 0
+
+    0 $accept: . statements $end
+
+    $default  reduce using rule 2 (statements)
+
+    statements  go to state 1
+
+
+State 1
+
+    0 $accept: statements . $end
+    1 statements: statements . assignments
+
+    $end     shift, and go to state 2
+    NEWLINE  shift, and go to state 3
+
+    $end      [reduce using rule 6 (assignments)]
+    NEWLINE   [reduce using rule 6 (assignments)]
+    $default  reduce using rule 6 (assignments)
+
+    assignments  go to state 4
+
+
+State 2
+
+    0 $accept: statements $end .
+
+    $default  accept
+
+
+State 3
+
+    5 assignments: NEWLINE .
+
+    $default  reduce using rule 5 (assignments)
+
+
+State 4
+
+    1 statements: statements assignments .
+    3 assignments: assignments . generalassignment NEWLINE
+    4            | assignments . predefinedassignment NEWLINE
+
+    STRING                  shift, and go to state 5
+    tokPROJECT_CUSTOM       shift, and go to state 6
+    tokPROJECT_TELIMP       shift, and go to state 7
+    tokPROJECT_CCM          shift, and go to state 8
+    tokLOCALFILENAMEDIR     shift, and go to state 9
+    tokTRACEPREFIXNAME      shift, and go to state 10
+    tokTRACECONFIGFILENAME  shift, and go to state 11
+    tokHEADING              shift, and go to state 12
+    tokVARIABLE_MASK        shift, and go to state 13
+    tokVARIABLE_NAME        shift, and go to state 14
+    tokVARIABLE             shift, and go to state 15
+    tokTIMESLICE            shift, and go to state 16
+    tokCONVERTBASE          shift, and go to state 17
+    tokINDEXTYPE            shift, and go to state 18
+
+    STRING                  [reduce using rule 1 (statements)]
+    EQUAL                   reduce using rule 1 (statements)
+    EQUAL                   [reduce using rule 12 (generalassignment)]
+    LBRACE                  reduce using rule 1 (statements)
+    LBRACE                  [reduce using rule 12 (generalassignment)]
+    NEWLINE                 reduce using rule 1 (statements)
+    NEWLINE                 [reduce using rule 12 (generalassignment)]
+    tokPROJECT_CUSTOM       [reduce using rule 1 (statements)]
+    tokPROJECT_TELIMP       [reduce using rule 1 (statements)]
+    tokPROJECT_CCM          [reduce using rule 1 (statements)]
+    tokLOCALFILENAMEDIR     [reduce using rule 1 (statements)]
+    tokTRACEPREFIXNAME      [reduce using rule 1 (statements)]
+    tokTRACECONFIGFILENAME  [reduce using rule 1 (statements)]
+    tokHEADING              [reduce using rule 1 (statements)]
+    tokVARIABLE_MASK        [reduce using rule 1 (statements)]
+    tokVARIABLE_NAME        [reduce using rule 1 (statements)]
+    tokVARIABLE             [reduce using rule 1 (statements)]
+    tokTIMESLICE            [reduce using rule 1 (statements)]
+    tokCONVERTBASE          [reduce using rule 1 (statements)]
+    tokINDEXTYPE            [reduce using rule 1 (statements)]
+    $default                reduce using rule 1 (statements)
+
+    generalassignment     go to state 19
+    predefinedassignment  go to state 20
+
+
+State 5
+
+   11 generalassignment: STRING .
+
+    $default  reduce using rule 11 (generalassignment)
+
+
+State 6
+
+   34 predefinedassignment: tokPROJECT_CUSTOM . LBRACE NEWLINE $@13 assignments RBRACE
+
+    LBRACE  shift, and go to state 21
+
+
+State 7
+
+   36 predefinedassignment: tokPROJECT_TELIMP . LBRACE NEWLINE $@14 assignments RBRACE
+
+    LBRACE  shift, and go to state 22
+
+
+State 8
+
+   38 predefinedassignment: tokPROJECT_CCM . LBRACE NEWLINE $@15 assignments RBRACE
+
+    LBRACE  shift, and go to state 23
+
+
+State 9
+
+   14 predefinedassignment: tokLOCALFILENAMEDIR . $@3 EQUAL STRING
+
+    $default  reduce using rule 13 ($@3)
+
+    $@3  go to state 24
+
+
+State 10
+
+   16 predefinedassignment: tokTRACEPREFIXNAME . $@4 EQUAL STRING
+
+    $default  reduce using rule 15 ($@4)
+
+    $@4  go to state 25
+
+
+State 11
+
+   18 predefinedassignment: tokTRACECONFIGFILENAME . $@5 EQUAL STRING
+
+    $default  reduce using rule 17 ($@5)
+
+    $@5  go to state 26
+
+
+State 12
+
+   20 predefinedassignment: tokHEADING . $@6 EQUAL STRING
+
+    $default  reduce using rule 19 ($@6)
+
+    $@6  go to state 27
+
+
+State 13
+
+   22 predefinedassignment: tokVARIABLE_MASK . $@7 EQUAL STRING
+
+    $default  reduce using rule 21 ($@7)
+
+    $@7  go to state 28
+
+
+State 14
+
+   24 predefinedassignment: tokVARIABLE_NAME . $@8 EQUAL STRING
+
+    $default  reduce using rule 23 ($@8)
+
+    $@8  go to state 29
+
+
+State 15
+
+   26 predefinedassignment: tokVARIABLE . LBRACESQ STRING $@9 RBRACESQ EQUAL STRING
+
+    LBRACESQ  shift, and go to state 30
+
+
+State 16
+
+   28 predefinedassignment: tokTIMESLICE . $@10 EQUAL STRING
+
+    $default  reduce using rule 27 ($@10)
+
+    $@10  go to state 31
+
+
+State 17
+
+   30 predefinedassignment: tokCONVERTBASE . $@11 EQUAL STRING
+
+    $default  reduce using rule 29 ($@11)
+
+    $@11  go to state 32
+
+
+State 18
+
+   32 predefinedassignment: tokINDEXTYPE . $@12 EQUAL STRING
+
+    $default  reduce using rule 31 ($@12)
+
+    $@12  go to state 33
+
+
+State 19
+
+    3 assignments: assignments generalassignment . NEWLINE
+    8 generalassignment: generalassignment . $@1 EQUAL generalassignment
+   10                  | generalassignment . LBRACE NEWLINE $@2 assignments RBRACE
+
+    LBRACE   shift, and go to state 34
+    NEWLINE  shift, and go to state 35
+
+    $default  reduce using rule 7 ($@1)
+
+    $@1  go to state 36
+
+
+State 20
+
+    4 assignments: assignments predefinedassignment . NEWLINE
+
+    NEWLINE  shift, and go to state 37
+
+
+State 21
+
+   34 predefinedassignment: tokPROJECT_CUSTOM LBRACE . NEWLINE $@13 assignments RBRACE
+
+    NEWLINE  shift, and go to state 38
+
+
+State 22
+
+   36 predefinedassignment: tokPROJECT_TELIMP LBRACE . NEWLINE $@14 assignments RBRACE
+
+    NEWLINE  shift, and go to state 39
+
+
+State 23
+
+   38 predefinedassignment: tokPROJECT_CCM LBRACE . NEWLINE $@15 assignments RBRACE
+
+    NEWLINE  shift, and go to state 40
+
+
+State 24
+
+   14 predefinedassignment: tokLOCALFILENAMEDIR $@3 . EQUAL STRING
+
+    EQUAL  shift, and go to state 41
+
+
+State 25
+
+   16 predefinedassignment: tokTRACEPREFIXNAME $@4 . EQUAL STRING
+
+    EQUAL  shift, and go to state 42
+
+
+State 26
+
+   18 predefinedassignment: tokTRACECONFIGFILENAME $@5 . EQUAL STRING
+
+    EQUAL  shift, and go to state 43
+
+
+State 27
+
+   20 predefinedassignment: tokHEADING $@6 . EQUAL STRING
+
+    EQUAL  shift, and go to state 44
+
+
+State 28
+
+   22 predefinedassignment: tokVARIABLE_MASK $@7 . EQUAL STRING
+
+    EQUAL  shift, and go to state 45
+
+
+State 29
+
+   24 predefinedassignment: tokVARIABLE_NAME $@8 . EQUAL STRING
+
+    EQUAL  shift, and go to state 46
+
+
+State 30
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ . STRING $@9 RBRACESQ EQUAL STRING
+
+    STRING  shift, and go to state 47
+
+
+State 31
+
+   28 predefinedassignment: tokTIMESLICE $@10 . EQUAL STRING
+
+    EQUAL  shift, and go to state 48
+
+
+State 32
+
+   30 predefinedassignment: tokCONVERTBASE $@11 . EQUAL STRING
+
+    EQUAL  shift, and go to state 49
+
+
+State 33
+
+   32 predefinedassignment: tokINDEXTYPE $@12 . EQUAL STRING
+
+    EQUAL  shift, and go to state 50
+
+
+State 34
+
+   10 generalassignment: generalassignment LBRACE . NEWLINE $@2 assignments RBRACE
+
+    NEWLINE  shift, and go to state 51
+
+
+State 35
+
+    3 assignments: assignments generalassignment NEWLINE .
+
+    $default  reduce using rule 3 (assignments)
+
+
+State 36
+
+    8 generalassignment: generalassignment $@1 . EQUAL generalassignment
+
+    EQUAL  shift, and go to state 52
+
+
+State 37
+
+    4 assignments: assignments predefinedassignment NEWLINE .
+
+    $default  reduce using rule 4 (assignments)
+
+
+State 38
+
+   34 predefinedassignment: tokPROJECT_CUSTOM LBRACE NEWLINE . $@13 assignments RBRACE
+
+    $default  reduce using rule 33 ($@13)
+
+    $@13  go to state 53
+
+
+State 39
+
+   36 predefinedassignment: tokPROJECT_TELIMP LBRACE NEWLINE . $@14 assignments RBRACE
+
+    $default  reduce using rule 35 ($@14)
+
+    $@14  go to state 54
+
+
+State 40
+
+   38 predefinedassignment: tokPROJECT_CCM LBRACE NEWLINE . $@15 assignments RBRACE
+
+    $default  reduce using rule 37 ($@15)
+
+    $@15  go to state 55
+
+
+State 41
+
+   14 predefinedassignment: tokLOCALFILENAMEDIR $@3 EQUAL . STRING
+
+    STRING  shift, and go to state 56
+
+
+State 42
+
+   16 predefinedassignment: tokTRACEPREFIXNAME $@4 EQUAL . STRING
+
+    STRING  shift, and go to state 57
+
+
+State 43
+
+   18 predefinedassignment: tokTRACECONFIGFILENAME $@5 EQUAL . STRING
+
+    STRING  shift, and go to state 58
+
+
+State 44
+
+   20 predefinedassignment: tokHEADING $@6 EQUAL . STRING
+
+    STRING  shift, and go to state 59
+
+
+State 45
+
+   22 predefinedassignment: tokVARIABLE_MASK $@7 EQUAL . STRING
+
+    STRING  shift, and go to state 60
+
+
+State 46
+
+   24 predefinedassignment: tokVARIABLE_NAME $@8 EQUAL . STRING
+
+    STRING  shift, and go to state 61
+
+
+State 47
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ STRING . $@9 RBRACESQ EQUAL STRING
+
+    $default  reduce using rule 25 ($@9)
+
+    $@9  go to state 62
+
+
+State 48
+
+   28 predefinedassignment: tokTIMESLICE $@10 EQUAL . STRING
+
+    STRING  shift, and go to state 63
+
+
+State 49
+
+   30 predefinedassignment: tokCONVERTBASE $@11 EQUAL . STRING
+
+    STRING  shift, and go to state 64
+
+
+State 50
+
+   32 predefinedassignment: tokINDEXTYPE $@12 EQUAL . STRING
+
+    STRING  shift, and go to state 65
+
+
+State 51
+
+   10 generalassignment: generalassignment LBRACE NEWLINE . $@2 assignments RBRACE
+
+    $default  reduce using rule 9 ($@2)
+
+    $@2  go to state 66
+
+
+State 52
+
+    8 generalassignment: generalassignment $@1 EQUAL . generalassignment
+
+    STRING  shift, and go to state 5
+
+    $default  reduce using rule 12 (generalassignment)
+
+    generalassignment  go to state 67
+
+
+State 53
+
+   34 predefinedassignment: tokPROJECT_CUSTOM LBRACE NEWLINE $@13 . assignments RBRACE
+
+    NEWLINE  shift, and go to state 3
+
+    NEWLINE   [reduce using rule 6 (assignments)]
+    $default  reduce using rule 6 (assignments)
+
+    assignments  go to state 68
+
+
+State 54
+
+   36 predefinedassignment: tokPROJECT_TELIMP LBRACE NEWLINE $@14 . assignments RBRACE
+
+    NEWLINE  shift, and go to state 3
+
+    NEWLINE   [reduce using rule 6 (assignments)]
+    $default  reduce using rule 6 (assignments)
+
+    assignments  go to state 69
+
+
+State 55
+
+   38 predefinedassignment: tokPROJECT_CCM LBRACE NEWLINE $@15 . assignments RBRACE
+
+    NEWLINE  shift, and go to state 3
+
+    NEWLINE   [reduce using rule 6 (assignments)]
+    $default  reduce using rule 6 (assignments)
+
+    assignments  go to state 70
+
+
+State 56
+
+   14 predefinedassignment: tokLOCALFILENAMEDIR $@3 EQUAL STRING .
+
+    $default  reduce using rule 14 (predefinedassignment)
+
+
+State 57
+
+   16 predefinedassignment: tokTRACEPREFIXNAME $@4 EQUAL STRING .
+
+    $default  reduce using rule 16 (predefinedassignment)
+
+
+State 58
+
+   18 predefinedassignment: tokTRACECONFIGFILENAME $@5 EQUAL STRING .
+
+    $default  reduce using rule 18 (predefinedassignment)
+
+
+State 59
+
+   20 predefinedassignment: tokHEADING $@6 EQUAL STRING .
+
+    $default  reduce using rule 20 (predefinedassignment)
+
+
+State 60
+
+   22 predefinedassignment: tokVARIABLE_MASK $@7 EQUAL STRING .
+
+    $default  reduce using rule 22 (predefinedassignment)
+
+
+State 61
+
+   24 predefinedassignment: tokVARIABLE_NAME $@8 EQUAL STRING .
+
+    $default  reduce using rule 24 (predefinedassignment)
+
+
+State 62
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ STRING $@9 . RBRACESQ EQUAL STRING
+
+    RBRACESQ  shift, and go to state 71
+
+
+State 63
+
+   28 predefinedassignment: tokTIMESLICE $@10 EQUAL STRING .
+
+    $default  reduce using rule 28 (predefinedassignment)
+
+
+State 64
+
+   30 predefinedassignment: tokCONVERTBASE $@11 EQUAL STRING .
+
+    $default  reduce using rule 30 (predefinedassignment)
+
+
+State 65
+
+   32 predefinedassignment: tokINDEXTYPE $@12 EQUAL STRING .
+
+    $default  reduce using rule 32 (predefinedassignment)
+
+
+State 66
+
+   10 generalassignment: generalassignment LBRACE NEWLINE $@2 . assignments RBRACE
+
+    NEWLINE  shift, and go to state 3
+
+    NEWLINE   [reduce using rule 6 (assignments)]
+    $default  reduce using rule 6 (assignments)
+
+    assignments  go to state 72
+
+
+State 67
+
+    8 generalassignment: generalassignment . $@1 EQUAL generalassignment
+    8                  | generalassignment $@1 EQUAL generalassignment .
+   10                  | generalassignment . LBRACE NEWLINE $@2 assignments RBRACE
+
+    LBRACE  shift, and go to state 34
+
+    EQUAL     reduce using rule 7 ($@1)
+    EQUAL     [reduce using rule 8 (generalassignment)]
+    LBRACE    [reduce using rule 8 (generalassignment)]
+    NEWLINE   reduce using rule 8 (generalassignment)
+    $default  reduce using rule 7 ($@1)
+
+    $@1  go to state 36
+
+
+State 68
+
+    3 assignments: assignments . generalassignment NEWLINE
+    4            | assignments . predefinedassignment NEWLINE
+   34 predefinedassignment: tokPROJECT_CUSTOM LBRACE NEWLINE $@13 assignments . RBRACE
+
+    STRING                  shift, and go to state 5
+    RBRACE                  shift, and go to state 73
+    tokPROJECT_CUSTOM       shift, and go to state 6
+    tokPROJECT_TELIMP       shift, and go to state 7
+    tokPROJECT_CCM          shift, and go to state 8
+    tokLOCALFILENAMEDIR     shift, and go to state 9
+    tokTRACEPREFIXNAME      shift, and go to state 10
+    tokTRACECONFIGFILENAME  shift, and go to state 11
+    tokHEADING              shift, and go to state 12
+    tokVARIABLE_MASK        shift, and go to state 13
+    tokVARIABLE_NAME        shift, and go to state 14
+    tokVARIABLE             shift, and go to state 15
+    tokTIMESLICE            shift, and go to state 16
+    tokCONVERTBASE          shift, and go to state 17
+    tokINDEXTYPE            shift, and go to state 18
+
+    $default  reduce using rule 12 (generalassignment)
+
+    generalassignment     go to state 19
+    predefinedassignment  go to state 20
+
+
+State 69
+
+    3 assignments: assignments . generalassignment NEWLINE
+    4            | assignments . predefinedassignment NEWLINE
+   36 predefinedassignment: tokPROJECT_TELIMP LBRACE NEWLINE $@14 assignments . RBRACE
+
+    STRING                  shift, and go to state 5
+    RBRACE                  shift, and go to state 74
+    tokPROJECT_CUSTOM       shift, and go to state 6
+    tokPROJECT_TELIMP       shift, and go to state 7
+    tokPROJECT_CCM          shift, and go to state 8
+    tokLOCALFILENAMEDIR     shift, and go to state 9
+    tokTRACEPREFIXNAME      shift, and go to state 10
+    tokTRACECONFIGFILENAME  shift, and go to state 11
+    tokHEADING              shift, and go to state 12
+    tokVARIABLE_MASK        shift, and go to state 13
+    tokVARIABLE_NAME        shift, and go to state 14
+    tokVARIABLE             shift, and go to state 15
+    tokTIMESLICE            shift, and go to state 16
+    tokCONVERTBASE          shift, and go to state 17
+    tokINDEXTYPE            shift, and go to state 18
+
+    $default  reduce using rule 12 (generalassignment)
+
+    generalassignment     go to state 19
+    predefinedassignment  go to state 20
+
+
+State 70
+
+    3 assignments: assignments . generalassignment NEWLINE
+    4            | assignments . predefinedassignment NEWLINE
+   38 predefinedassignment: tokPROJECT_CCM LBRACE NEWLINE $@15 assignments . RBRACE
+
+    STRING                  shift, and go to state 5
+    RBRACE                  shift, and go to state 75
+    tokPROJECT_CUSTOM       shift, and go to state 6
+    tokPROJECT_TELIMP       shift, and go to state 7
+    tokPROJECT_CCM          shift, and go to state 8
+    tokLOCALFILENAMEDIR     shift, and go to state 9
+    tokTRACEPREFIXNAME      shift, and go to state 10
+    tokTRACECONFIGFILENAME  shift, and go to state 11
+    tokHEADING              shift, and go to state 12
+    tokVARIABLE_MASK        shift, and go to state 13
+    tokVARIABLE_NAME        shift, and go to state 14
+    tokVARIABLE             shift, and go to state 15
+    tokTIMESLICE            shift, and go to state 16
+    tokCONVERTBASE          shift, and go to state 17
+    tokINDEXTYPE            shift, and go to state 18
+
+    $default  reduce using rule 12 (generalassignment)
+
+    generalassignment     go to state 19
+    predefinedassignment  go to state 20
+
+
+State 71
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ STRING $@9 RBRACESQ . EQUAL STRING
+
+    EQUAL  shift, and go to state 76
+
+
+State 72
+
+    3 assignments: assignments . generalassignment NEWLINE
+    4            | assignments . predefinedassignment NEWLINE
+   10 generalassignment: generalassignment LBRACE NEWLINE $@2 assignments . RBRACE
+
+    STRING                  shift, and go to state 5
+    RBRACE                  shift, and go to state 77
+    tokPROJECT_CUSTOM       shift, and go to state 6
+    tokPROJECT_TELIMP       shift, and go to state 7
+    tokPROJECT_CCM          shift, and go to state 8
+    tokLOCALFILENAMEDIR     shift, and go to state 9
+    tokTRACEPREFIXNAME      shift, and go to state 10
+    tokTRACECONFIGFILENAME  shift, and go to state 11
+    tokHEADING              shift, and go to state 12
+    tokVARIABLE_MASK        shift, and go to state 13
+    tokVARIABLE_NAME        shift, and go to state 14
+    tokVARIABLE             shift, and go to state 15
+    tokTIMESLICE            shift, and go to state 16
+    tokCONVERTBASE          shift, and go to state 17
+    tokINDEXTYPE            shift, and go to state 18
+
+    $default  reduce using rule 12 (generalassignment)
+
+    generalassignment     go to state 19
+    predefinedassignment  go to state 20
+
+
+State 73
+
+   34 predefinedassignment: tokPROJECT_CUSTOM LBRACE NEWLINE $@13 assignments RBRACE .
+
+    $default  reduce using rule 34 (predefinedassignment)
+
+
+State 74
+
+   36 predefinedassignment: tokPROJECT_TELIMP LBRACE NEWLINE $@14 assignments RBRACE .
+
+    $default  reduce using rule 36 (predefinedassignment)
+
+
+State 75
+
+   38 predefinedassignment: tokPROJECT_CCM LBRACE NEWLINE $@15 assignments RBRACE .
+
+    $default  reduce using rule 38 (predefinedassignment)
+
+
+State 76
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ STRING $@9 RBRACESQ EQUAL . STRING
+
+    STRING  shift, and go to state 78
+
+
+State 77
+
+   10 generalassignment: generalassignment LBRACE NEWLINE $@2 assignments RBRACE .
+
+    $default  reduce using rule 10 (generalassignment)
+
+
+State 78
+
+   26 predefinedassignment: tokVARIABLE LBRACESQ STRING $@9 RBRACESQ EQUAL STRING .
+
+    $default  reduce using rule 26 (predefinedassignment)

@@ -1,0 +1,37 @@
+TGENTRAFFIC_ALL {
+HEADING       = "Case Name               Type     SET____  ACTUAL  MADE____  OK______  FAIL____  PROGRESS  RATE [%]"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "GSM_TERM_CALLS            *      *****     *****    ******    ******    ******    ******   ***.***"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "UMTS_TERM_CALLS           *      *****     *****    ******    ******    ******    ******   ***.***"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "GSM_LU_UPDATE             *      *****     *****    ******    ******    ******    ******   ***.***"
+VARIABLE_MASK = "                                 *****     *****    ******    ******    ******    ******          "
+VARIABLE_NAME = "GSM_LU_PERIODIC           *      AAAAA     BBBBB    CCCCCC    DDDDDD    EEEEEE    FFFFFF   ***.***"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "GSM_LU_REGISTER           *      *****     *****    ******    ******    ******    ******   ***.***"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "GSM_LU_ATTACH             *      *****     *****    ******    ******    ******    ******   ***.***"
+VARIABLE_MASK = "                                 *****     *****    ******    ******    ******    ******          "
+VARIABLE_NAME = "UMTS_LU_PERIODIC          *      GGGGG     HHHHH    IIIIII    JJJJJJ    KKKKKK    LLLLLL   ***.***"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "UMTS_LU_REGISTER          *      *****     *****    ******    ******    ******    ******   ***.***"
+VARIABLE_MASK = "                                                                                                  "
+VARIABLE_NAME = "UMTS_MOB_TO_MOB           *      *****     *****    ******    ******    ******    ******   ***.***"
+TIMESLICE   = 1000
+CONVERTBASE = 10
+INDEXTYPE   = GLOBAL
+VARIABLE[A] = GSM_LU_PERIODIC_SET
+VARIABLE[B] = GSM_LU_PERIODIC_ACTUAL
+VARIABLE[C] = GSM_LU_PERIODIC_MADE
+VARIABLE[D] = GSM_LU_PERIODIC_OK
+VARIABLE[E] = GSM_LU_PERIODIC_FAIL
+VARIABLE[F] = GSM_LU_PERIODIC_PROGRESS
+VARIABLE[G] = UMTS_LU_PERIODIC_SET
+VARIABLE[H] = UMTS_LU_PERIODIC_ACTUAL
+VARIABLE[I] = UMTS_LU_PERIODIC_MADE
+VARIABLE[J] = UMTS_LU_PERIODIC_OK
+VARIABLE[K] = UMTS_LU_PERIODIC_FAIL
+VARIABLE[L] = UMTS_LU_PERIODIC_PROGRESS
+}
+
